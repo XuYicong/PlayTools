@@ -164,9 +164,75 @@ class AKPlugin: NSObject, Plugin {
             }
             let consumed = onMoved(deltaX, deltaY)
             if consumed {
+                guard let cgevt = MagnifyGesture.shared.getEvent(
+                    magnification: Float32(deltaY),
+                    proto: event.cgEvent) else { return nil }
+                let nsEvent = NSEvent(cgEvent: cgevt)
+                NSLog("Constructed: \(String(describing: nsEvent))")
+//                guard let data = event.cgEvent?.data else { return nil }
+//                let length = CFDataGetLength(data)
+//                let bytes = CFDataGetBytePtr(data)
+//                for idx in 0..<length {
+//                    NSLog("\(bytes![idx])")
+//                }
+//                NSLog("这是滚轮")
+                // 暂时从post来传递事件
                 return nil
+//                return nsEvent
             }
             return event
+        })
+        NSEvent.addLocalMonitorForEvents(matching: .magnify, handler: {event in
+            NSLog("Monitored: \(event)")
+            guard let cgevent = event.cgEvent else { return event }
+//            for id in 0..<256 {
+//                guard let field = CGEventField(rawValue: UInt32(id)) else { continue }
+//                let value = cgevent.getIntegerValueField(field)
+//                NSLog("field: \(id), value: \(value)")
+//            }
+            let newEvent = NSEvent(cgEvent: cgevent)
+            NSLog("New: \(String(describing: newEvent))")
+            // Test to see what the `post` thing has changed my fields
+            if let originalEvent = MagnifyGesture.shared.lastEvent {
+//                for id in 0..<256 {
+//                    guard let field = CGEventField(rawValue: UInt32(id)) else { continue }
+//                    let value = cgevent.getIntegerValueField(field)
+//                    let valueFloat = cgevent.getDoubleValueField(field)
+//                    let valueBefore = originalEvent.getIntegerValueField(field)
+//                    let valueFloatBefore = originalEvent.getDoubleValueField(field)
+//                    if value != valueBefore {
+//                        NSLog("Diff: Field: \(id), before: \(valueBefore)(\(valueFloatBefore)), after: \(value)(\(valueFloat))")
+//                    }
+//                }
+//                MagnifyGesture.shared.lastEvent = nil
+                // The above are all the same and it not working!
+                // I'm dumping the entire data to see difference!
+//                guard let data = cgevent.data else { return newEvent }
+//                guard let dataBefore = originalEvent.data else { return newEvent }
+//                // If all data are the same then nothing can differ them right?
+//                let length = CFDataGetLength(data)
+//                let lengthBefore = CFDataGetLength(dataBefore)
+//                let bytes = CFDataGetBytePtr(data)
+//                let bytesBefore = CFDataGetBytePtr(dataBefore)
+//                for idx in 0..<length {
+//                    NSLog("\(bytes![idx])")
+//                }
+//                NSLog("继续打印！")
+//                for idx in 0..<lengthBefore {
+//                    NSLog("\(bytesBefore![idx])")
+//                }
+//                NSLog("看看区别！")
+                // 44-52行 differ
+            } else {
+                guard let data = cgevent.data else { return newEvent }
+//                let length = CFDataGetLength(data)
+//                let bytes = CFDataGetBytePtr(data)
+//                NSLog("原生的也看看！")
+//                for idx in 0..<length {
+//                    NSLog("\(bytes![idx])")
+//                }
+            }
+            return newEvent
         })
     }
 

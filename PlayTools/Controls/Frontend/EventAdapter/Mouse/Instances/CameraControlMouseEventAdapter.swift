@@ -11,10 +11,8 @@ import Foundation
 
 public class CameraControlMouseEventAdapter: MouseEventAdapter {
     public func handleScrollWheel(deltaX: CGFloat, deltaY: CGFloat) -> Bool {
-        _ = ActionDispatcher.dispatch(key: KeyCodeNames.scrollWheelScale, valueX: deltaX, valueY: deltaY)
-        // I dont know why but this is the logic before the refactor.
-        // Might be a mistake but keeping it for now
-        return true
+//        _ = ActionDispatcher.dispatch(key: KeyCodeNames.scrollWheelScale, valueX: deltaX, valueY: deltaY)
+        true
     }
 
     public func handleMove(deltaX: CGFloat, deltaY: CGFloat) -> Bool {
